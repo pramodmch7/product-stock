@@ -7,7 +7,7 @@ from resources.Rsparaw import *
 from resources.Rspafinal import *
 from resources.Rspaprocess import *
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='./build', static_url_path='/')
 CORS(app)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = postgres
@@ -23,9 +23,15 @@ def createTabels():
     db.create_all()
 
 
+@app.errorhandler(404)
+def notFound(e):
+    return app.send_static_file('index.html')
+
+
 @app.route('/')
 def home():
-    return 'HanUmaN'
+    # return 'HanUmaN'
+    return app.send_static_file('index.html')
 
 
 app.register_blueprint(RawProduct)
@@ -35,4 +41,4 @@ app.register_blueprint(ProcessProduct)
 if __name__ == '__main__':
     #from db import db
     # db.init_app(app)
-    app.run(host='0.0.0.0', debug=Frue)
+    app.run(host='0.0.0.0', debug=False)
